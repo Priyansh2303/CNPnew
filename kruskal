@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct{
+    int src;
+    int dsg;
+    int dst;
+} edge;
+
+int parent[20];
+ 
+int find(int n){
+    if(parent[n]==n)
+    return n;
+    return parent[n]=find(parent[n]);
+}
+
+void union_set(int u, int v){
+    parent[u]=v;
+}
+
+void sort(edge g[20], int edg){
+    for(int i=0;i<edg-1;i++){
+        for(int j=i+1;j<edg;j++){
+            if(g[i].dst>g[j].dst){
+                edge temp=g[i];
+                g[i]=g[j];
+                g[j]=temp;
+            }
+        }
+    }
+}
+void kruskal(edge inp[20],int ver, int edg){
+   
+    int idx=0;
+    edge out[20];
+    
+    for(int i=0;i<ver;i++){
+        parent[i]=i;
+    }
+    
+    sort(inp,edg);
+    
+    for(int i=0;i<ver&&idx<ver-1;i++){
+        int u=find(inp[i].src);
+        int v=find(inp[i].dsg);
+        
+        if(u!=v){
+            out[idx++]=inp[i];
+            union_set(u,v);
+        }
+    }
+    
+    printf("Kruskal MST\n");
+    for(int i = 0; i < idx; i++) {
+        printf("{source: %d, destination: %d, weight: %d}\n", out[i].src, out[i].dsg, out[i].dst);
+    }
+    
+}
+
+int main()
+{
+    int ver;
+    int edges;
+    edge g[20];
+    printf("enter the number of vertices: ");
+    scanf("%d", &ver);
+    printf("enter the number of edges: ");
+    scanf("%d", &edges);
+    
+    int i=0;
+    for(i=0;i<edges;i++){
+        printf("for %d index\n",i+1);
+        printf("enter the source vertex: ");
+        scanf("%d",&g[i].src);
+        printf("enter the designation vertex: ");
+        scanf("%d",&g[i].dsg);
+        printf("enter the distance: ");
+        scanf("%d",&g[i].dst);
+    }
+    
+    kruskal(g,ver,edges);
+    return 0;
+}
