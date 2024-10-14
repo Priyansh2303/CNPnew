@@ -1,0 +1,61 @@
+#include <stdio.h>
+#define DEGREE 16
+
+int result[30];
+
+int mod2add(int x, int y) {
+    return x ^ y;
+}
+
+void calc_crc(int *data, int length) {
+    int ccitt[DEGREE + 1] = {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+    
+    for (int pos = 0; pos <= length - DEGREE; pos++) {
+        if (data[pos] == 1) {
+            for (int i = 0; i <= DEGREE; i++) {
+                data[pos + i] = mod2add(data[pos + i], ccitt[i]);
+            }
+        }
+    }
+}
+
+void print_data(int *data, int start, int end) {
+    for (int i = start; i < end; i++)
+        printf("%d", data[i]);
+}
+
+int main() {
+    int data[30], length = 0;
+    char ch;
+
+    printf("Enter the data (Message) stream: ");
+    while ((ch = getchar()) != '\n')
+        data[length++] = ch - '0';
+
+    for (int i = 0; i < DEGREE; i++)
+        data[length++] = 0;
+
+    for (int i = 0; i < length; i++)
+        result[i] = data[i];
+
+    calc_crc(result, length);
+
+    printf("\nThe transmitted frame is: ");
+    print_data(data, 0, length - DEGREE);
+    print_data(result, length - DEGREE, length);
+
+    printf("\nEnter the stream for which CRC has to be checked: ");
+    length = 0;
+    while ((ch = getchar()) != '\n')
+        data[length++] = ch - '0';
+
+    for (int i = 0; i < length; i++)
+        result[i] = data[i];
+
+    calc_crc(result, length);
+
+    printf("\nCalculated Checksum: ");
+    print_data(result, length - DEGREE, length);
+
+    return 0;
+}
