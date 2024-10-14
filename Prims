@@ -1,75 +1,60 @@
 #include <stdio.h>
-#include <limits.h>
+#define MAX 100
+#define INF 9999
 
-#define MAX 20
+void primAlgorithm(int costMatrix[MAX][MAX], int numNodes) {
+    int selected[MAX] = {0}; // Array to track selected nodes
+    int totalCost = 0;       // Total cost of the minimum spanning tree
+    int edgeCount = 0;       // To track the number of edges added
 
-int selectMinVertex(int key[], int mstSet[], int total_vertices) {
-    int min = INT_MAX;
-    int minIndex = 0;
+    // Start from the first node (node 0)
+    selected[0] = 1;
 
-    for (int i = 0; i < total_vertices; i++) {
-        if (mstSet[i] == 0 && key[i] < min) {
-            min = key[i];
-            minIndex = i;
-        }
-    }
-    return minIndex;
-}
+    printf("Edges in the Minimum Spanning Tree:\n");
 
-void prims(int graph[MAX][MAX], int total_vertices) {
-    int parent[MAX];   // To store the MST
-    int key[MAX];      // Key values to pick the minimum weight edge
-    int mstSet[MAX];   // To represent the vertices included in MST
+    while (edgeCount < numNodes - 1) {
+        int minCost = INF;
+        int start = -1, end = -1;
 
-    // Initialize all keys as infinity and mstSet as false
-    for (int i = 0; i < total_vertices; i++) {
-        key[i] = INT_MAX;
-        mstSet[i] = 0;
-    }
-
-    // Start from the first vertex
-    key[0] = 0;        // Pick the first vertex first
-    parent[0] = -1;    // First vertex is the root of the MST
-
-    // The MST will have exactly total_vertices - 1 edges
-    for (int i = 0; i < total_vertices - 1; i++) {
-        int u = selectMinVertex(key, mstSet, total_vertices);
-        mstSet[u] = 1;  // Include the picked vertex in MST
-
-        // Update the key and parent of adjacent vertices
-        for (int v = 0; v < total_vertices; v++) {
-            if (graph[u][v] && mstSet[v] == 0 && graph[u][v] < key[v]) {
-                parent[v] = u;
-                key[v] = graph[u][v];
+        // Find the minimum cost edge connecting a selected node to an unselected node
+        for (int i = 0; i < numNodes; i++) {
+            if (selected[i]) {
+                for (int j = 0; j < numNodes; j++) {
+                    if (!selected[j] && costMatrix[i][j] < minCost) {
+                        minCost = costMatrix[i][j];
+                        start = i;
+                        end = j;
+                    }
+                }
             }
         }
+
+        // Select the edge and add it to the tree
+        selected[end] = 1;
+        totalCost += minCost;
+        edgeCount++;
+
+        printf("Edge %d: (%d -> %d) Cost: %d\n", edgeCount, start, end, minCost);
     }
 
-    // Print the MST
-    printf("Prim's MST:\n");
-    for (int i = 1; i < total_vertices; i++) {
-        printf("Edge: %d - %d, Weight: %d\n", parent[i], i, graph[i][parent[i]]);
-    }
+    printf("Total cost of Minimum Spanning Tree: %d\n", totalCost);
 }
 
 int main() {
-    int total_vertices;
+    int numNodes;
+    int costMatrix[MAX][MAX];
 
-    printf("Enter the number of vertices: ");
-    scanf("%d", &total_vertices);
+    printf("Enter the number of nodes: ");
+    scanf("%d", &numNodes);
 
-    int graph[MAX][MAX];
-
-    // Input graph adjacency matrix
-    printf("Enter the adjacency matrix (enter 0 if no edge between vertices):\n");
-    for (int i = 0; i < total_vertices; i++) {
-        for (int j = 0; j < total_vertices; j++) {
-            scanf("%d", &graph[i][j]);
+    printf("Enter the cost matrix (use 9999 for no direct edge):\n");
+    for (int i = 0; i < numNodes; i++) {
+        for (int j = 0; j < numNodes; j++) {
+            scanf("%d", &costMatrix[i][j]);
         }
     }
 
-    // Perform Prim's algorithm
-    prims(graph, total_vertices);
+    primAlgorithm(costMatrix, numNodes);
 
     return 0;
 }
