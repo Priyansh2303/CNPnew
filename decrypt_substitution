@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int get_index_by_letter(char c) {
+    char str[26] = "qwertyuiopasdfghjklzxcvbnm";
+    int idx = -1;
+
+    for (int i = 0; i < strlen(str); i++) {
+        if (c == str[i]) {
+            idx = i;
+            break;
+        }
+    }
+
+    return idx;
+}
+
+void decrypt_substitution(char inp[]) {
+    int len = strlen(inp);
+    char out[50];
+    int idx = 0;
+    char originalstr[26] = "abcdefghijklmnopqrstuvwxyz";
+
+    for (int i = 0; i < len; i++) {
+        if (inp[i] != ' ') {
+            idx = get_index_by_letter(inp[i]);
+            if (idx != -1) {
+                out[i] = originalstr[idx];
+            } else {
+                out[i] = inp[i];
+            }
+        } else {
+            out[i] = ' ';
+        }
+    }
+
+    out[len] = '\0';
+    printf("Decrypted string: %s\n", out);
+}
+
+int main() {
+    char input[] = "lkocqzil";
+    decrypt_substitution(input);
+
+    return 0;
+}
