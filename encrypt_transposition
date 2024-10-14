@@ -6,17 +6,14 @@ void encrypt_transposition(char inp[], int N) {
     int idx = 0;
     char out[50];
 
-    // for rail 1 (indices 0, 3, 6, ...)
     for (int i = 0; i < N; i += 3) {
         out[idx++] = inp[i];
     }
 
-    // for rail 2 (indices 1, 4, 7, ...)
     for (int i = 1; i < N; i += 3) {
         out[idx++] = inp[i];
     }
 
-    // for rail 3 (indices 2, 5, 8, ...)
     for (int i = 2; i < N; i += 3) {
         out[idx++] = inp[i];
     }
@@ -30,9 +27,7 @@ int main() {
     char input[50];
 
     printf("Enter a string to encrypt: ");
-    fgets(input, sizeof(input), stdin);
-
-    input[strcspn(input, "\n")] = 0;  // Remove newline character
+    scanf("%49s", input);  // Limiting input to prevent buffer overflow
 
     int len = strlen(input);
     encrypt_transposition(input, len);
