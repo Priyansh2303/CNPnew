@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <string.h>
+#define DLE 16
+#define STX 2
+#define ETX 3
+
+int main(){
+    char ch, arr[50];
+    printf("enter the string to be charactor stuff: ");
+    int i=0;
+    while(1){
+        scanf("%c",&ch);
+        if(ch=='\n'){
+            break;
+        }
+        else if(ch==DLE){
+            arr[i++]=DLE;
+        }
+        else if(ch==STX){
+            arr[i++]=STX;
+        }
+        else if(ch==ETX){
+            arr[i++]=ETX;
+        }
+        else{
+            arr[i++]=ch;
+        }
+    }
+    
+    char stuff[50];
+    int j=0;
+    stuff[j++]=DLE;
+    stuff[j++]=STX;
+    for(int k=0;k<strlen(arr);k++){
+        if(arr[k]==DLE){
+            stuff[j++]=DLE;
+        }
+        
+            stuff[j++]=arr[k];
+        
+    }
+     stuff[j++]=ETX;
+    stuff[j++]=DLE;
+    stuff[j]='\0';
+    
+     printf("\n\nThe stuffed stream is:\n");
+    for (int k = 0; k < j; k++) {
+        if (stuff[k] == DLE) {
+            printf("DLE");
+        } else if (stuff[k] == STX) {
+            printf("STX");
+        } else if (stuff[k] == ETX) {
+            printf("ETX");
+        } else {
+            printf("%c", stuff[k]); 
+        }
+    }
+
+printf("\n the destuff string is: \n");
+ for (int k = 2; k < j - 2; k++) {
+            if (stuff[k] == DLE && stuff[k + 1] == DLE) {
+                printf("DLE");  
+                k++;  
+            } else if (stuff[k] == STX) {
+                printf("STX");
+            } else if (stuff[k] == ETX) {
+                printf("ETX");
+            } else {
+                printf("%c", stuff[k]); 
+            }
+        }
+        return 0;
+    
+}
